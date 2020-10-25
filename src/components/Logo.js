@@ -13,6 +13,7 @@ export default class Logo extends Component<{}> {
                  source={require('../images/logo.png')}/>
           <Text style={styles.logoText}>Social Habit Building App</Text>
       </View>
+          
     )
   }
 }

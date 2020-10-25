@@ -6,23 +6,11 @@ import { StyleSheet,
          TouchableOpacity
       } from 'react-native';
 
-import Logo from '../components/Logo';
-import Form from '../components/Form';
-import {Actions} from 'react-native-router-flux';
-
 export default class Signup extends Component<{}> {
-  login() {
-    Actions.login()
-  }
+
   render() {
     return (
       <View style = {styles.container}>
-        <Logo/>
-        <Form type="Signup"/>
-        <View style={styles.signupTextCont}>
-          <Text style={styles.signupText}>Already have an account?</Text>
-           <TouchableOpacity ><Text style={styles.signupButton} onPress={this.login}> Sign in</Text></TouchableOpacity>
-        </View>
       </View>
     )
   }
@@ -43,7 +31,7 @@ const styles = StyleSheet.create({
 
   signupButton: {
     fontSize: 16,
-    color: '#e5e4e9',
+    color: '#080808',
     fontWeight: '500'
   },
 
