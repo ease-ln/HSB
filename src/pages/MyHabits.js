@@ -1,46 +1,52 @@
-import React, { Component } from 'react';
-import { StyleSheet, 
-         Text, 
-         View, 
-         StatusBar,
-         TouchableOpacity
-      } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import React, {useState} from 'react';
+import { StyleSheet, Text, View, FlatList } from 'react-native';
+import Header from './components/header';
+import HabitItem from "./components/HabitItem";
+import AddHabit from "./components/AddHabit";
 
-export default class Signup extends Component<{}> {
+export default function App() {
+  const [habits, setHabits] = useState([
+    { text: 'brush teeth', key: '1' },
+    { text: 'do a workout', key: '2' },
+    { text: 'work on the FSE app', key: '3' },
+  ]);
 
-  render() {
-    return (
-      <View style = {styles.container}>
-      </View>
-    )
+  const pressHandler = (key) => {
+    setHabits((prevHabits) => {
+      return prevHabits.filter(todo => todo.key != key)
+    })
   }
+  return (
+    <View style={styles.container}>
+      <Header />
+      <View style={styles.content}>
+        <AddHabit />
+        <View style={styles.list}>
+          <FlatList
+              data={habits}
+              renderItem={ ({ item }) => (
+                  <HabitItem item={item} pressHandler = {pressHandler} />
+              ) }
+          />
+        </View>
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    backgroundColor: '#333043',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flex: 1,
+    backgroundColor: 'white',
+    // alignItems: 'center',
+    // justifyContent: 'center',
   },
-
-  signupText: {
-    fontSize: 16,
-    color: '#8f8e94'
+  content: {
+    padding: 40,
+    paddingTop: 20,
   },
-
-  signupButton: {
-    fontSize: 16,
-    color: '#080808',
-    fontWeight: '500'
-  },
-
-  signupTextCont: {
-    flexGrow: 0.1,
-    alignItems: "flex-end",
-    justifyContent: 'flex-end',
-    flexDirection: 'row',
-    paddingVertical: 15,
-  }
+  list: {
+    marginTop: 20,
+}
 });
-
