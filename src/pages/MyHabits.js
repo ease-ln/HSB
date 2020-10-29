@@ -6,11 +6,14 @@ import { StyleSheet,
          TouchableOpacity
       } from 'react-native';
 
+import { Actions } from 'react-native-router-flux';
+import { color } from 'react-native-reanimated';
+import {Backend} from '../Backend.js';
 export default class Signup extends Component<{}> {
-
   render() {
     return (
       <View style = {styles.container}>
+        <Text onPress= {Backend.checkLogin} style={styles.signupText}>Welcome to the homescreen!!!!!</Text>
       </View>
     )
   }

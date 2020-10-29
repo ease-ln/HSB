@@ -3,15 +3,36 @@ import { StyleSheet,
          Text, 
          View,
          Image,
+         Alert, 
          TextInput,
          TouchableOpacity
        } from 'react-native';
 import {Actions} from 'react-native-router-flux';
 
+import {Backend as Backend} from '../Backend';
+
 export default class Logo extends Component<{}> {
   forgotpassword() {
     Actions.forgotpassword()
   }
+
+  constructor(props)
+  {
+    super(props)
+    this.state = {
+      id: '',
+      password: '',
+   }
+  }
+
+  handleId = (text) => {
+    this.setState({ id: text })   
+}
+handlePassword = (text) => {
+    this.setState({ password: text })   
+}
+  
+
   render() {
     return (
       <View style={styles.container}>
@@ -25,6 +46,7 @@ export default class Logo extends Component<{}> {
                       keyboardType="email-address"
                       placeholderTextColor="#d3d0e5"
                       ref={(input) => this.password = input}
+                      onChangeText = {this.handleId}
           />
         </View>
 
@@ -39,13 +61,14 @@ export default class Logo extends Component<{}> {
                       placeholderTextColor="#d3d0e5"
                       selectionColor="#040"
                       onSubmitEditing={()=> this.password.focus()}
+                      onChangeText = {this.handlePassword}
                       />
         </View>
 
 
 
-        <TouchableOpacity style={styles.button}>
-          <Text style = {styles.buttonText} onPress = {this.myhabit}>{this.props.type}</Text>
+        <TouchableOpacity style={styles.button} onPress = {()=>Backend.loginUser(this.state.id,this.state.password)}>
+          <Text style = {styles.buttonText} >{this.props.type}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={this.forgotpassword}>
           <Text style = {styles.forgotpassword}> Forgot password?</Text>
