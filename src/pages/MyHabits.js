@@ -13,7 +13,6 @@ export default class Signup extends Component<{}> {
   render() {
     return (
       <View style = {styles.container}>
-        <Text onPress= {Backend.checkLogin} style={styles.signupText}>Welcome to the homescreen!!!!!</Text>
       </View>
     )
   }
