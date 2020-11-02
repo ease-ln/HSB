@@ -8,49 +8,13 @@ import { StyleSheet,
          StatusBar
        } from 'react-native';
 import {Actions} from 'react-native-router-flux';
-
-
+import {Backend} from '../Backend';
 export default class ForgotPassword extends Component<{}> {
   state = {
       email: '',
-      VALID_EMAIL: '',
    }
   handleEmail = (text) => {
       this.setState({ email: text })   
-  }
-  validation = (email, VALID_EMAIL) => {
-    //here have to be validate functtion that return VALID_EMAIL = true or false base on email existence in database and send message to user specified email
-    if(email.length<5 || email.length>60 || email.includes('@')!=true){
-      VALID_EMAIL = false
-    } else {
-      VALID_EMAIL = true
-    }
-    if(VALID_EMAIL){
-      Alert.alert(
-        'Password sent!',
-        'Please check you email.',
-        [
-          {
-            text: 'OK', onPress: () => {
-                this.login()
-            }
-          }
-        ],
-        { cancelable: false }
-      )
-    } else {
-      Alert.alert(
-        'Error',
-        'Please check you Email address.',
-        [
-          { text: 'Try again', }
-        ],
-        { cancelable: false }
-      )
-    }
-  }
-  login() {
-    Actions.login()
   }
   render() {
     return (
@@ -65,7 +29,7 @@ export default class ForgotPassword extends Component<{}> {
                       placeholderTextColor="#d3d0e5"
                       onChangeText = {this.handleEmail}
           />
-        <TouchableOpacity style={styles.button}  onPress={() => this.validation(this.state.email, this.state.VALID_EMAIL)}>
+        <TouchableOpacity style={styles.button}  onPress={() => Backend.forgotPassword(this.state.email)}>
           <Text style={styles.buttonText}>Reset</Text>
         </TouchableOpacity>
         </View>

@@ -4,6 +4,9 @@ import { StyleSheet, Text, View, FlatList } from 'react-native';
 import Header from './components/header';
 import HabitItem from "./components/HabitItem";
 import AddHabit from "./components/AddHabit";
+import { Actions } from 'react-native-router-flux';
+import { color } from 'react-native-reanimated';
+import {Backend} from '../Backend.js';
 
 export default function App() {
   const [habits, setHabits] = useState([
@@ -16,7 +19,8 @@ export default function App() {
     setHabits((prevHabits) => {
       return prevHabits.filter(todo => todo.key != key)
     })
-  }
+
+export default class Signup extends Component<{}> {
   return (
     <View style={styles.container}>
       <Header />

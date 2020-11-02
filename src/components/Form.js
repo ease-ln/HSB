@@ -10,9 +10,15 @@ import { StyleSheet,
        } from 'react-native';
 import {Actions} from 'react-native-router-flux';
 
+
+
+//import {Backend as Backend} from '../Backend';
+import { back } from 'react-native/Libraries/Animated/src/Easing';
+import { Backend } from '../Backend';
+
 export default class Form extends Component<{}> {
 
-  _storeData = async () => {
+  /*_storeData = async () => {
   try {
     await AsyncStorage.setItem(
       'Loginuser',
@@ -21,16 +27,23 @@ export default class Form extends Component<{}> {
   } catch (error) {
     alert("error")
   }
-  }
+  }*/
+  
 
-  state = {
+  constructor(props)
+  {
+    super(props)
+    this.state = {
       username: '',
       email: '',
       password: '',
-      UserNameUniquness: false, //this 3 for front end checks
+      UserNameUniquness: false, //I think these are not necessary anymore
       EmailUniquness: false,
       Password_Validness: false,
    }
+  }
+
+  
     handleUserName = (text) => {
       this.setState({ username: text });
   }
@@ -40,53 +53,9 @@ export default class Form extends Component<{}> {
   handlePassword = (text) => {
       this.setState({ password: text })   
   }
-  validation = (username, email, password) => {
-    this.state.UserNameUniquness = true //for front // back have to implemet
-    this.state.EmailUniquness = true //for front // back have to implemet
-    this.state.Password_Validness = true //for front // back have to implemet
-
-    if(username.length < 5 || username.length > 40 || !this.state.UserNameUniquness) {
-      Alert.alert(
-        'UserName error!',
-        'Please check you usernamae.',
-        [
-          {
-            text: 'OK',
-          }
-        ],
-        { cancelable: false }
-      )  
-    }
-    else if(email.includes('@')!=true || !this.state.EmailUniquness) {
-      Alert.alert(
-        'Email error!',
-        'Please check you Email.',
-        [
-          {
-            text: 'OK',
-          }
-        ],
-        { cancelable: false }
-      )  
-    }
-    else if(!this.state.Password_Validness) {
-      Alert.alert(
-        'Email error!',
-        'Please check you password.',
-        [
-          {
-            text: 'OK',
-          }
-        ],
-        { cancelable: false }
-      )  
-    }
-    else {
-        this._storeData()  //if everything ok save data local storage and redirect to myhabit page
-        Actions.myhabits()
-    }
-    }
+  
   render() {
+    //todo take care of onpress and onchange if they make a problem
     return (
       <View style={styles.container}>
 
@@ -130,7 +99,7 @@ export default class Form extends Component<{}> {
                       />
         </View>
 
-        <TouchableOpacity style={styles.button}  onPress={() => this.validation(this.state.username, this.state.email, this.state.password)}>
+        <TouchableOpacity style={styles.button}  onPress={() => Backend.signUpUser(this.state.username,this.state.email,this.state.password)}>
           <Text style={styles.buttonText}>{this.props.type}</Text>
         </TouchableOpacity>
       </View>
