@@ -13,7 +13,7 @@ const HomeNavigator = () => (
     name="Home" 
     component={Home}
     options={{
-        title: 'My Habbits',
+        title: 'My Habits',
         headerTintColor: 'white',
         headerStyle: { backgroundColor: '#333', height: 100}
     }}

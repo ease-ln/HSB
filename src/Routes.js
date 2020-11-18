@@ -4,7 +4,11 @@ import {Router, Stack, Scene} from 'react-native-router-flux';
 
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-import Myhabits from './pages/MyHabits';
+
+//ERROR: This causes the problem (App Navigator is not a React component)
+import Myhabits from './routes/AppNavigator';
+
+
 import Forgotpassword from './pages/ForgotPassword';
 
 export default class Routes extends Component<{}> {
