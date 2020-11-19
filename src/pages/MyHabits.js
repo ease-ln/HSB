@@ -7,36 +7,29 @@ import AddHabit from "../components/AddHabit";
 import { Actions } from 'react-native-router-flux';
 import { color } from 'react-native-reanimated';
 import {Backend} from '../Backend.js';
-export default function App() {
+import { AppNavigator } from '../routes/AppNavigator';
+
+export default function App({ navigation }) {
+
   const [habits, setHabits] = useState([
     { text: 'brush teeth', key: '1' },
     { text: 'do a workout', key: '2' },
     { text: 'work on the FSE app', key: '3' },
   ]);
-
   const pressHandler = (key) => {
     setHabits((prevHabits) => {
       return prevHabits.filter(todo => todo.key != key)
     })
   }
+  
+  navigation.navigate('Home');
+
   return (
     <View style={styles.container}>
-      <Header />
-      <View style={styles.content}>
-        <AddHabit />
-        <View style={styles.list}>
-          <FlatList
-              data={habits}
-              renderItem={ ({ item }) => (
-                  <HabitItem item={item} pressHandler = {pressHandler} />
-              ) }
-          />
-        </View>
-      </View>
+        <AppNavigator />
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

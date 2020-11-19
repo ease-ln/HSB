@@ -12,7 +12,7 @@ import {Actions} from 'react-native-router-flux';
 
 export default class Signup extends Component<{}> {
   login() {
-    Actions.login()
+    Actions.pop()
   }
   render() {
     return (

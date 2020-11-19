@@ -16,6 +16,9 @@ export default class ForgotPassword extends Component<{}> {
   handleEmail = (text) => {
       this.setState({ email: text })   
   }
+  login() {
+    Actions.pop()
+  }
   render() {
     return (
         <View style ={styles.container}> 
@@ -29,7 +32,7 @@ export default class ForgotPassword extends Component<{}> {
                       placeholderTextColor="#d3d0e5"
                       onChangeText = {this.handleEmail}
           />
-        <TouchableOpacity style={styles.button}  onPress={() => Backend.forgotPassword(this.state.email)}>
+        <TouchableOpacity style={styles.button}  onPress={() => Backend.forgotPassword(this.state.email, null)}>
           <Text style={styles.buttonText}>Reset</Text>
         </TouchableOpacity>
         </View>

@@ -1,7 +1,5 @@
-
 import * as firebase from 'firebase';
-import { Component } from 'react';
-
+import { Component, setState } from 'react';
 import { StyleSheet, 
   Text, 
   View,
@@ -12,7 +10,7 @@ import { StyleSheet,
   AsyncStorage
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
-
+var err = 0;
 export class Backend {
     //signs up the user
     static signUpUser = (username, email, password) => {
@@ -61,11 +59,22 @@ export class Backend {
         }
       });
 
+        _storeData = async () => {
+            try {
+              await AsyncStorage.setItem(
+                'Logeduser',
+                '1'
+              )
+            } catch {
+            }
+        }
 
-      firebase.auth().createUserWithEmailAndPassword(email, password).then(function (user) { console.log(user); })
-        .catch(error => {
+      firebase.auth().createUserWithEmailAndPassword(email, password).then(function (user) { 
+          firebase.database().ref("users/" + username).set({ emailAdress: email, uid: username });
+          this._storeData();  //if everything ok save data local storage and redirect to myhabit page
+          Actions.reset('myhabits') 
+       }).catch(error => {
           switch (error.code) {
-
             case 'auth/email-already-in-use':
               console.log(`Email address ${email} already in use.`);
               Alert.alert(
@@ -123,22 +132,35 @@ export class Backend {
 
           }
         });
-      firebase.auth().onAuthStateChanged((user) => {
-        if (user) {
-          firebase.database().ref("users/" + username).set({ emailAdress: email, uid: username });
+      //firebase.auth().onAuthStateChanged((user) => {
+        //if (user) {
+          //firebase.database().ref("users/" + username).set({ emailAdress: email, uid: username });
           //this._storeData();  //if everything ok save data local storage and redirect to myhabit page
-          Actions.myhabits();
-        }
-      });
+          //Actions.myhabits();
+        //}
+      //});
     }
+
 
     //logs in the user 
     //todo make this support login with username instead of password
     static loginUser = (id,password) => {
-        firebase.auth().signInWithEmailAndPassword(id,password).catch(function (error){
+        _storeData = async () => {
+            try {
+              await AsyncStorage.setItem(
+                'Logeduser',
+                '1'
+              )
+            } catch {
+            }
+        }
+        firebase.auth().signInWithEmailAndPassword(id,password).then(function(){
+               this._storeData();
+                Actions.reset('myhabits') 
+          }).catch(function(error) {
           switch (error.code) {
              case 'auth/invalid-email':
-               console.log(`Email address ${id} is invalid.`);
+               console.log(`Email address ${id} ${err}is invalid.`);
                Alert.alert(
                 'Email error!',
                 `Email address ${id} is invalid.`,
@@ -150,7 +172,7 @@ export class Backend {
                 { cancelable: false }
               )  
                break;
-               case 'auth/user-not-found':
+             case 'auth/user-not-found':
                console.log(`There is no user account with the email "${id}".`);
                Alert.alert(
                 'Email error!',
@@ -191,15 +213,7 @@ export class Backend {
                break;
              default:
                console.log(error.message);
-               break;
-          
-       }
-       return;
-        });
-        firebase.auth().onAuthStateChanged((user) => {
-          if (user) {
-            Actions.myhabits();
-          }
+            }
         });
     }
 

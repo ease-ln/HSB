@@ -2,6 +2,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, Button } from 'react-native';
 import { globalStyles } from '../styles/global';
+import { Actions } from 'react-native-router-flux';
 
 export default function Details({ route, navigation }) {
     let { title, body, rating, done, key } = route.params.pass_item; // here we extract the other atributes os the review
@@ -43,6 +44,14 @@ export default function Details({ route, navigation }) {
                 }
                 title= "Delete the Habit"
                 color = '#4E8098' 
+            />
+            <Button
+                onPress={() => {
+                     Actions.statistics()
+                    }
+                }
+                title= "Statistics"
+                color = '#00A9A5' 
             />
 
         </View>

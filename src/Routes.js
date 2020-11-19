@@ -4,23 +4,40 @@ import {Router, Stack, Scene} from 'react-native-router-flux';
 
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-
-//ERROR: This causes the problem (App Navigator is not a React component)
-import Myhabits from './routes/AppNavigator';
-
-
+import Myhabits from './pages/MyHabits';
 import Forgotpassword from './pages/ForgotPassword';
+import Statistics from './pages/Statistics';
+import home from './routes/AppNavigator';
+
 
 export default class Routes extends Component<{}> {
-	render() {
+	state = {
+      status: 'false',
+   }
+  handleEmail = (text) => {
+      this.setState({ status: text })   
+  }
+   _storeData = async () => {
+   try {
+    const value = await AsyncStorage.getItem('Loginuser')
+    if(value == 1) {
+    	this.handleEmail(false);
+    }
+       }
+   catch{
+    alert('error')
+   }}
+              // <Scene key="home" component={home} title="home"/>
+
+  render() {
 		return(
 			<Router>
 			    <Stack key="root" hideNavBar={true}>
 			      <Scene key="login" component={Login} title="Login" initial={true}/>
 			      <Scene key="signup" component={Signup} title="Signup"/>
-			      <Scene key="myhabits" component={Myhabits} title="Myhabits"/>
 			      <Scene key="forgotpassword" component={Forgotpassword} title="Forgotpassword"/>
-
+			      <Scene key="myhabits" component={Myhabits} title="Myhabits" />
+			      <Scene key="statistics" component={Statistics} title="Statistics"/>
 			    </Stack>
 			 </Router>
 			)

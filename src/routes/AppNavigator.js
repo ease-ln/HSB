@@ -1,10 +1,27 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import Home from "../screens/home";
-import Details from "../screens/details";
+import { createStackNavigator } from '@react-navigation/stack';
+import home from '../screens/home';
+import details from '../screens/details';
 
-const { Navigator, Screen } = createStackNavigator();
+//const { Navigator, Screen } = createStackNavigator();
+const Stack = createStackNavigator();
+
+function HomeNavigator() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Home" component={home} />
+      <Stack.Screen name="Details" component={details} />
+    </Stack.Navigator>
+  );
+}
+// no deafaultNavigationOptions? cause new version :()
+export const AppNavigator = () => (
+  <NavigationContainer>
+    <HomeNavigator />
+  </NavigationContainer>
+);
+/*
 //other options: "float", "screen"
 // we had headerMode="none" after <Navigator so we had no header
 const HomeNavigator = () => (
@@ -13,7 +30,7 @@ const HomeNavigator = () => (
     name="Home" 
     component={Home}
     options={{
-        title: 'My Habits',
+        title: 'My Habbits',
         headerTintColor: 'white',
         headerStyle: { backgroundColor: '#333', height: 100}
     }}
@@ -30,9 +47,9 @@ const HomeNavigator = () => (
 );
 
 // no deafaultNavigationOptions? cause new version :()
-
 export const AppNavigator = () => (
   <NavigationContainer>
     <HomeNavigator />
   </NavigationContainer>
 );
+*/

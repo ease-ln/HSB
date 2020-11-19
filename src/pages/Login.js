@@ -3,20 +3,33 @@ import { StyleSheet,
          Text, 
          View, 
          TouchableOpacity,
-         StatusBar
+         StatusBar,
+         Alert
        } from 'react-native';
 
 import Logo from '../components/Logo';
 import Form from '../components/FormLogin';
 
 import {Actions} from 'react-native-router-flux';
+import { AsyncStorage } from 'react-native';
 
 
 export default class Login extends Component<{}> {
-  signup() {
-    Actions.signup()
-  }
+  _storeData = async () => {
+   try {
+    var value = await AsyncStorage.getItem("Logeduser")
+    if(value == 1){
+    //await AsyncStorage.remove('Loginuser')
+       Actions.reset('myhabits') 
+
+       }
+      }
+   catch{
+    alert('error')
+   }
+}
   render() {
+    this._storeData()
     return (
       <View style = {styles.container}>
         <Logo/>

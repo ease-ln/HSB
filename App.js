@@ -27,7 +27,9 @@ const firebaseConfig = {
     appId: "1:849123477708:web:1c78bab1fdbc42412d5a69"
 };
 
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 
 export default class App extends Component<{}> {
   /*_storeData = async () => {
@@ -46,6 +48,13 @@ export default class App extends Component<{}> {
  
   render() {
    // this._storeData()
+   firebase.auth().onAuthStateChanged(user=>{
+     if(user){
+      console.log(user.email)
+      firebase.auth().signOut();
+     }
+    });
+  
     return (
       <View style = {styles.container}>
         <StatusBar
