@@ -290,4 +290,79 @@ export class Backend {
       Actions.login();
 })
 }
+
+
+    //adds a new habit to the user
+    static addHabit(name,description)
+    {
+      //check if the user already has a habit with the same name
+
+      //generate habit ID (global counter)
+
+      //add the habit to the list of habits
+
+      //add the habit to the user's habits
+
+      //return habit id
+
+      //NOTE: or ID can be used to only the global habit list and we don't need to give it to the user
+    }
+
+    static editHabit(name,description)
+    {
+      //take the ID from the users habit list and update the name and description of it 
+    }
+
+    static deleteHabit(name)
+    {
+      //delete the habit but just from the user's list
+    }
+
+    static tickHabit(name)
+    {
+      //ticks the habit by adding a day to the list of days
+      this.setAccessTime();
+    }
+
+    static setAccessTime()
+    {
+      //sets the access time
+    }
+
+    static untickHabit(name)
+    {
+      //removes the current day from the list of days of the habit
+      this.setAccessTime();
+    }
+
+    static fetchHabits()
+    {
+      //returns the list of habits of the current user
+    }
+
+    static addUserToHabit(username,habit)
+    {
+      //adds the habit to the other user's list of habits
+      //marks it as new with the name of the user who added it
+      //when the other user is logged in again, he will receive a notification/alert about this
+      //the above can be done easily in firebase
+    }
+
+    static initHabits()
+    {
+      //checks the last access time, if it is a new day, all habit ticks are reset
+      //sets the list of habits and gives it to the front end
+
+      //if habits are new, make notifications from it
+    }
+
+    static fillCalendar(name)
+    {
+      //sets the input data for the calendar and gives it to the calendar front
+    }
+
+    static getTotalDays(name)
+    {
+      //returns the number of days (size of the list of days)
+    }
 }
