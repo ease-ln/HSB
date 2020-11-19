@@ -70,8 +70,11 @@ export class Backend {
         }
 
       firebase.auth().createUserWithEmailAndPassword(email, password).then(function (user) { 
+        //map both ways
           firebase.database().ref("users/" + username).set({ emailAdress: email, uid: username });
+          firebase.database().ref("usernames/" + email).set({uid: username });
           this._storeData();  //if everything ok save data local storage and redirect to myhabit page
+          //todo: what is reset?
           Actions.reset('myhabits') 
        }).catch(error => {
           switch (error.code) {
@@ -290,27 +293,60 @@ export class Backend {
       Actions.login();
 })
 }
+    static currentUserID()
+    {
+      email = firebase.auth().currentUser.email;
+      return firebase.database().ref("usernames/"+email).once('value').then(function(snap){
+        return snap.child(uid).val();
+      });
+    }
 
 
     //adds a new habit to the user
     static addHabit(name,description)
     {
-      //check if the user already has a habit with the same name
-
-      //generate habit ID (global counter)
-
-      //add the habit to the list of habits
-
-      //add the habit to the user's habits
-
-      //return habit id
-
-      //NOTE: or ID can be used to only the global habit list and we don't need to give it to the user
+      refUser = firebase.database().ref("users/"+this.currentUserID()+"/habits");
+      return refUser.once("value").then(function(snapshot){
+        if (snapshot.child(name).val() != null)  //incompatible with the database
+        {
+          //has a habit with the same name
+          Alert.alert(
+            'Invalid name!',
+            `You already have a habit with the exact same name!`,
+            [
+              {
+                text: 'OK',
+              }
+            ],
+            { cancelable: false }
+          );
+          return false;
+        }
+        //generate habit ID (global counter) and push to the habits list
+        refHabits = firebase.database().ref("habits");
+        var ID = refHabits.push({
+          id: ID,
+              name: name,
+              description: description
+        }).key;
+        //todo: add the user to the list of habit users
+        refUser.child(name).set({
+          addedBy: this.currentUserID(),
+          new: true,
+          numberOfDays: 0,
+          id: ID
+        });
+        //todo: how to add the dates
+        return true;
+      })
     }
 
-    static editHabit(name,description)
+    static editHabit(oldname,name,description)
     {
       //take the ID from the users habit list and update the name and description of it 
+
+      firebase.database().ref("habits/"+id+"/name").set(name);
+      firebase.database().ref("habits/"+id+"/description").set(description);
     }
 
     static deleteHabit(name)

@@ -7,7 +7,12 @@ import details from '../screens/details';
 //const { Navigator, Screen } = createStackNavigator();
 const Stack = createStackNavigator();
 
+
+
 function HomeNavigator() {
+  //welcomeMessage = `There is no user account with the email "${id}".`;
+  //todo: make a way to have the username displayed
+  //todo: add a logout button
   return (
     <Stack.Navigator>
       <Stack.Screen name="Home" component={home} />
