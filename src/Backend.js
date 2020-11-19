@@ -344,7 +344,7 @@ export class Backend {
     static editHabit(oldname,name,description)
     {
       //take the ID from the users habit list and update the name and description of it 
-
+      //todo: will this reset the habit for all users?
       firebase.database().ref("habits/"+id+"/name").set(name);
       firebase.database().ref("habits/"+id+"/description").set(description);
     }
@@ -352,23 +352,42 @@ export class Backend {
     static deleteHabit(name)
     {
       //delete the habit but just from the user's list
+
     }
 
-    static tickHabit(name)
+    static tickHabit(id)
     {
+      refUser = firebase.database().ref("users/"+this.currentUserID()+"/habits");
       //ticks the habit by adding a day to the list of days
-      this.setAccessTime();
+      var keyOfLastTick = refUser.child(id+"/dates").push({
+        date: this.getDate()
+      }).key;
+      refUser.child(id+"/dates/lastDate").set(keyOfLastTick);
+      //increment days
+      refUser.child(id).once("value").then(function(snapshot){
+        var oldValue = snapshot.child("numberOfDays").val();
+        refUser.child(id+"/numberOfDays").set(oldValue+1);
+      })
+      this.setAccessDate();
     }
 
-    static setAccessTime()
+    static getDate()
     {
-      //sets the access time
+      var date = new Date().getDate();
+      var month = new Date().getMonth() + 1;
+      var year = new Date().getFullYear();
+      return year+"-"+month+"-"+date;
+    }
+
+    static setAccessDate()
+    {
+      firebase.database().ref("users/"+this.currentUserID()+"/lastAccessDate").set(this.getDate());
     }
 
     static untickHabit(name)
     {
       //removes the current day from the list of days of the habit
-      this.setAccessTime();
+      this.setAccessDate();
     }
 
     static fetchHabits()
@@ -392,13 +411,17 @@ export class Backend {
       //if habits are new, make notifications from it
     }
 
-    static fillCalendar(name)
+    static fillCalendar(id)
     {
       //sets the input data for the calendar and gives it to the calendar front
     }
 
-    static getTotalDays(name)
+    static getTotalDays(id)
     {
+      refUser = firebase.database().ref("users/"+this.currentUserID()+"/habits");
       //returns the number of days (size of the list of days)
+      return refUser.child(id).once("value").then(function(snapshot){
+        return snapshot.child("numberOfDays").val();  
+      })
     }
 }
