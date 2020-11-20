@@ -8,6 +8,7 @@ import Myhabits from './pages/MyHabits';
 import Forgotpassword from './pages/ForgotPassword';
 import Statistics from './pages/Statistics';
 import home from './routes/AppNavigator';
+import { Backend } from './Backend';
 
 
 export default class Routes extends Component<{}> {
@@ -17,7 +18,7 @@ export default class Routes extends Component<{}> {
   handleEmail = (text) => {
       this.setState({ status: text })   
   }
-   _storeData = async () => {
+   /*_storeData = async () => {
    try {
     const value = await AsyncStorage.getItem('Loginuser')
     if(value == 1) {
@@ -26,18 +27,34 @@ export default class Routes extends Component<{}> {
        }
    catch{
     alert('error')
-   }}
+   }}*/
               // <Scene key="home" component={home} title="home"/>
 
   render() {
-		return(
+    /*if(Backend.checkLogin())
+    {
+      return(
+        <Router>
+            <Stack key="root" hideNavBar={true}>
+              <Scene key="myhabits" component={Myhabits} title="Myhabits" initial={true}/>
+              <Scene key="statistics" component={Statistics} title="Statistics"/>
+            </Stack>
+         </Router>
+        )
+    }
+		else*/ return(
 			<Router>
 			    <Stack key="root" hideNavBar={true}>
-			      <Scene key="login" component={Login} title="Login" initial={true}/>
+			      <Scene key="login" component={Login} title="Login" initial={true}
+            on={Backend.checkLogin}
+            
+                          success="myhabits"
+            
+                          failure="login"/>
 			      <Scene key="signup" component={Signup} title="Signup"/>
 			      <Scene key="forgotpassword" component={Forgotpassword} title="Forgotpassword"/>
-			      <Scene key="myhabits" component={Myhabits} title="Myhabits" />
-			      <Scene key="statistics" component={Statistics} title="Statistics"/>
+            <Scene key="myhabits" component={Myhabits} title="Myhabits"/>
+            <Scene key="statistics" component={Statistics} title="Statistics"/>
 			    </Stack>
 			 </Router>
 			)

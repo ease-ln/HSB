@@ -12,10 +12,11 @@ import Form from '../components/FormLogin';
 
 import {Actions} from 'react-native-router-flux';
 import { AsyncStorage } from 'react-native';
+import { Backend } from '../Backend';
 
 
 export default class Login extends Component<{}> {
-  _storeData = async () => {
+ /* _storeData = async () => {
    try {
     var value = await AsyncStorage.getItem("Logeduser")
     if(value == 1){
@@ -27,16 +28,18 @@ export default class Login extends Component<{}> {
    catch{
     alert('error')
    }
-}
+}*/
   render() {
-    this._storeData()
+    //this._storeData()
+    //console.log("login page reached");
+   // if(Backend.checkLogin()) Actions.myhabits();
     return (
       <View style = {styles.container}>
         <Logo/>
         <Form type="Login"/>
         <View style={styles.signupTextCont}>
           <Text style={styles.signupText}>Don't have an account yet?</Text>
-          <TouchableOpacity onPress={this.signup}><Text style={styles.signupButton}> Signup</Text></TouchableOpacity>
+          <TouchableOpacity onPress={Actions.signup}><Text style={styles.signupButton}> Signup</Text></TouchableOpacity>
         </View>
       </View>
     )

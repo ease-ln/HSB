@@ -57,98 +57,86 @@ export class Backend {
           );
           return;
         }
-      });
-
-        _storeData = async () => {
-            try {
-              await AsyncStorage.setItem(
-                'Logeduser',
-                '1'
-              )
-            } catch {
+       // ret = false;
+        firebase.auth().createUserWithEmailAndPassword(email, password).then(function (user) { 
+          //map both ways
+          console.log("User added to auth");
+          id = firebase.auth().currentUser.uid;
+            firebase.database().ref("users/" + username).set({ emailAdress: email, uid: username, authId:id });
+            firebase.database().ref("usernames/" + id).set({uid: username });
+            console.log("User added to db");
+            Actions.myhabits();
+           // this.loginUser(id,password);
+           // this._storeData();  //if everything ok save data local storage and redirect to myhabit page
+            //todo: what is reset?
+           // Actions.reset('myhabits') 
+         }).catch(error => {
+            switch (error.code) {
+              case 'auth/email-already-in-use':
+                console.log(`Email address ${email} already in use.`);
+                Alert.alert(
+                  'Email error!',
+                  `Email address "${email}" already in use.`,
+                  [
+                    {
+                      text: 'OK',
+                    }
+                  ],
+                  { cancelable: false }
+                );
+                break;
+              case 'auth/invalid-email':
+                console.log(`Email address ${email} is invalid.`);
+                Alert.alert(
+                  'Email error!',
+                  `Email address ${email} is invalid.`,
+                  [
+                    {
+                      text: 'OK',
+                    }
+                  ],
+                  { cancelable: false }
+                );
+                break;
+              case 'auth/operation-not-allowed':
+                console.log(`Error during sign up.`);
+                Alert.alert(
+                  'Unknown error!' `Error during sign up.`,
+                  [
+                    {
+                      text: 'OK',
+                    }
+                  ],
+                  { cancelable: false }
+                );
+                break;
+              case 'auth/weak-password':
+                console.log('Password is not strong enough. Add additional characters including special characters and numbers.');
+                Alert.alert(
+                  'Password error!',
+                  'Password is not strong enough. Add additional characters including special characters and numbers.',
+                  [
+                    {
+                      text: 'OK',
+                    }
+                  ],
+                  { cancelable: false }
+                );
+                break;
+              default:
+                console.log(error.message);
+                break;
+  
             }
-        }
-
-      firebase.auth().createUserWithEmailAndPassword(email, password).then(function (user) { 
-        //map both ways
-          firebase.database().ref("users/" + username).set({ emailAdress: email, uid: username });
-          firebase.database().ref("usernames/" + email).set({uid: username });
-          this._storeData();  //if everything ok save data local storage and redirect to myhabit page
-          //todo: what is reset?
-          Actions.reset('myhabits') 
-       }).catch(error => {
-          switch (error.code) {
-            case 'auth/email-already-in-use':
-              console.log(`Email address ${email} already in use.`);
-              Alert.alert(
-                'Email error!',
-                `Email address "${email}" already in use.`,
-                [
-                  {
-                    text: 'OK',
-                  }
-                ],
-                { cancelable: false }
-              );
-              break;
-            case 'auth/invalid-email':
-              console.log(`Email address ${email} is invalid.`);
-              Alert.alert(
-                'Email error!',
-                `Email address ${email} is invalid.`,
-                [
-                  {
-                    text: 'OK',
-                  }
-                ],
-                { cancelable: false }
-              );
-              break;
-            case 'auth/operation-not-allowed':
-              console.log(`Error during sign up.`);
-              Alert.alert(
-                'Unknown error!' `Error during sign up.`,
-                [
-                  {
-                    text: 'OK',
-                  }
-                ],
-                { cancelable: false }
-              );
-              break;
-            case 'auth/weak-password':
-              console.log('Password is not strong enough. Add additional characters including special characters and numbers.');
-              Alert.alert(
-                'Password error!',
-                'Password is not strong enough. Add additional characters including special characters and numbers.',
-                [
-                  {
-                    text: 'OK',
-                  }
-                ],
-                { cancelable: false }
-              );
-              break;
-            default:
-              console.log(error.message);
-              break;
-
-          }
-        });
-      //firebase.auth().onAuthStateChanged((user) => {
-        //if (user) {
-          //firebase.database().ref("users/" + username).set({ emailAdress: email, uid: username });
-          //this._storeData();  //if everything ok save data local storage and redirect to myhabit page
-          //Actions.myhabits();
-        //}
-      //});
+          });
+      });
     }
 
 
     //logs in the user 
     //todo make this support login with username instead of password
     static loginUser = (id,password) => {
-        _storeData = async () => {
+        /*_storeData = async () => {
             try {
               await AsyncStorage.setItem(
                 'Logeduser',
@@ -156,10 +144,11 @@ export class Backend {
               )
             } catch {
             }
-        }
+        }*/
         firebase.auth().signInWithEmailAndPassword(id,password).then(function(){
-               this._storeData();
-                Actions.reset('myhabits') 
+               //this._storeData();
+                //Actions.reset('myhabits') 
+                Actions.myhabits();
           }).catch(function(error) {
           switch (error.code) {
              case 'auth/invalid-email':
@@ -279,26 +268,24 @@ export class Backend {
           });
     }
     static checkLogin(){ 
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        console.log('user is logged');
-        console.log(user.email);
-      }
-      else
-      {
-        console.log('User is not logged in');
-      }
-      firebase.auth().signOut();
-      console.log('User signed out!');
-      Actions.login();
-})
+    return firebase.auth().currentUser != null;
+
 }
+    static logoutUser()
+    {
+      firebase.auth().signOut();
+      Actions.login();
+      console.log("user logged out");
+      //todo: add an alert here for confirmation
+    }
     static currentUserID()
     {
-      email = firebase.auth().currentUser.email;
-      return firebase.database().ref("usernames/"+email).once('value').then(function(snap){
-        return snap.child(uid).val();
+      uid = firebase.auth().currentUser.uid;
+      var data;
+      data =  firebase.database().ref("usernames/"+uid).once('value').then(function(snapshot){
+        return snapshot.child("uid").val();
       });
+      return data;
     }
 
 
@@ -330,11 +317,13 @@ export class Backend {
               description: description
         }).key;
         //todo: add the user to the list of habit users
-        refUser.child(name).set({
+        refUser.child(ID).set({
           addedBy: this.currentUserID(),
           new: true,
           numberOfDays: 0,
-          id: ID
+          id: ID,
+          name: name,
+          description: description
         });
         //todo: how to add the dates
         return true;
@@ -393,6 +382,17 @@ export class Backend {
     static fetchHabits()
     {
       //returns the list of habits of the current user
+      refUser = firebase.database().ref("users/"+this.currentUserID()+"/habits");
+      var arr = [];
+
+      refUser.once('value').then(function(snapshot){
+        for(var id in snapshot.val())
+        {
+          var element = [snapshot.child(id).val()];
+          arr.push.apply(arr,element);
+        }  //there might be a problem with async
+      });
+      return arr;
     }
 
     static addUserToHabit(username,habit)
@@ -401,14 +401,6 @@ export class Backend {
       //marks it as new with the name of the user who added it
       //when the other user is logged in again, he will receive a notification/alert about this
       //the above can be done easily in firebase
-    }
-
-    static initHabits()
-    {
-      //checks the last access time, if it is a new day, all habit ticks are reset
-      //sets the list of habits and gives it to the front end
-
-      //if habits are new, make notifications from it
     }
 
     static fillCalendar(id)

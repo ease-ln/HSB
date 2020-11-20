@@ -7,6 +7,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Card from '../shared/card'
 import { color } from 'react-native-reanimated';
 
+import {Backend} from '../Backend';
+
 // {navigation} as an arg means that when we call Home from navigator we pass some obj 
 // and we only need a "navigation" part (atribute) of this object so we type {navigation}
 export default function Home({ navigation }) {
@@ -21,7 +23,7 @@ export default function Home({ navigation }) {
     //this thing is called when habits list is changed
     useEffect(() => {
         console.log('useEffect')
-        console.log(habits)
+        //console.log(habits)
         let item = habits.find((item) => item.created === true);
         // if item is defined then it means that we have added a new habit and we should go to the editing page of this habit
         if (item) {
@@ -60,6 +62,17 @@ export default function Home({ navigation }) {
             return tmp
         })
     }
+    const fetchHabits = () =>
+    {
+        /*habits = Backend.fetchHabits();
+        habits.forEach(element => {
+            setHabits((currentHabits) => {
+                return [{ title: element.name, rating: 0, body: element.description, key: element.id, done: false, created: true}, ...currentHabits] // create a List w/ habit in it and all the decomposed elements from currentHabits
+            })
+        });*/
+        //todo: this makes problems
+        //todo: choosing which habits are ticked is here
+    }
 
 
     const [doneColor, setDoneColor] = useState('#eee');
@@ -78,8 +91,19 @@ export default function Home({ navigation }) {
         }
     }
 
+    
+    //console.log(username);
+    if(Backend.checkLogin())
+    {
+        console.log("User logged in (home.js)");
+    }
+    //this will work when I understand async functions 
+    var username =  Backend.currentUserID();
+    console.log(username);
+    fetchHabits();
     return (
         <View style={globalStyles.container}>
+            <TouchableOpacity ><Text>Welcome!</Text></TouchableOpacity>
             {/* <Modal animationType="slide" visible={modalOpen}>
                 <View style={styles.modalContent}>
                     <MaterialIcons
@@ -118,14 +142,14 @@ export default function Home({ navigation }) {
                             <Text style={{
                                 ...globalStyles.titleText,
                                 color: item.done === true ? '#999' : 'black',
-                                textDecorationLine: item.done === true ? 'line-through' : '',
+                                textDecorationLine: item.done === true ? 'line-through' : 'none',
                                 }}> { item.title }</Text>
                         </Card>
                     </TouchableOpacity>
 
                 )}
             />
-            
+            <TouchableOpacity onPress={Backend.logoutUser}><Text>Log out</Text></TouchableOpacity>
         </View>
     );
 }

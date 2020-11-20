@@ -2,16 +2,18 @@ import React, { Component } from 'react';
 import { StyleSheet, 
          View,
          StatusBar,
-         AsyncStorage
+         AsyncStorage,
+         LogBox
        } from 'react-native';
 import {Actions} from 'react-native-router-flux';
-import Routes from './src/Routes';
+import Routes from './src/Routes.js';
 
 import * as firebase from 'firebase';
 
 // Optionally import the services that you want to use
 import "firebase/auth";
 import "firebase/database";
+import { Backend } from './src/Backend.js';
 //import "firebase/firestore";
 //import "firebase/functions";
 //import "firebase/storage";
@@ -31,6 +33,27 @@ if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
 
+firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+  .catch(function(error) {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+  });
+
+//this is to ignore the annoying setting a timer warning
+  import { YellowBox } from 'react-native';
+  import _ from 'lodash';
+  
+  YellowBox.ignoreWarnings(['Setting a timer']);
+  const _console = _.clone(console);
+  console.warn = message => {
+    if (message.indexOf('Setting a timer') <= -1) {
+      _console.warn(message);
+    }
+  };
+
+  //LogBox.ignoreLogs();
+
 export default class App extends Component<{}> {
   /*_storeData = async () => {
    try {
@@ -48,12 +71,14 @@ export default class App extends Component<{}> {
  
   render() {
    // this._storeData()
-   firebase.auth().onAuthStateChanged(user=>{
+   /*firebase.auth().onAuthStateChanged(user=>{
      if(user){
       console.log(user.email)
       firebase.auth().signOut();
      }
-    });
+    });*/
+    if(Backend.checkLogin()) console.log("User logged in (App.js)");
+    else console.log("User is not logged in (App.js)");
   
     return (
       <View style = {styles.container}>
