@@ -1,12 +1,30 @@
 import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, Button } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, Button,BackHandler,Alert } from 'react-native';
 import { globalStyles } from '../styles/global';
 import { Actions } from 'react-native-router-flux';
+import { useEffect } from "react";
 
 export default function Details({ route, navigation }) {
-    let { title, body, rating, done, key } = route.params.pass_item; // here we extract the other atributes os the review
+    let { name, description, rating, done, key } = route.params.pass_item; // here we extract the other atributes os the review
     let editingHabit = route.params.pass_item;
+
+        
+
+    useEffect(() => {
+        const backAction = () => {
+            if(name=='') route.params.pass_deleteHabit(key);
+            console.log("back pressed");
+            navigation.goBack();
+            };
+    
+        const backHandler = BackHandler.addEventListener(
+          "hardwareBackPress",
+          backAction
+        );
+    
+        return () => backHandler.remove();
+      }, []);
 
     //the guy in the comments helped :)
     return (
@@ -15,20 +33,20 @@ export default function Details({ route, navigation }) {
             
             <TextInput
                 style={[ {fontSize: 40} ]}
-                onChangeText={(title_text) => title = title_text}
-                defaultValue = {title}
-                placeholder = 'Habit tittle'
+                onChangeText={(title_text) => name = title_text}
+                defaultValue = {name}
+                placeholder = 'Habit name'
             />
             
             <TextInput
-                onChangeText={(body_text) => body = body_text}
-                defaultValue = {body}
+                onChangeText={(body_text) => description = body_text}
+                defaultValue = {description}
                 placeholder = 'Description'
             />
             {/* <Text>{done}</Text> */}
             <Button
                 onPress={() => {
-                    route.params.pass_editHabit({title: title, rating: rating, body: body, key: key, done: done});
+                    route.params.pass_editHabit({name: name, rating: rating, description: description, key: key, done: done});
                     navigation.goBack();
                     }
                 }

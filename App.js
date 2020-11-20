@@ -54,6 +54,7 @@ firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
 
   //LogBox.ignoreLogs();
 
+var currentUserID = null;
 export default class App extends Component<{}> {
   /*_storeData = async () => {
    try {
@@ -77,7 +78,12 @@ export default class App extends Component<{}> {
       firebase.auth().signOut();
      }
     });*/
-    if(Backend.checkLogin()) console.log("User logged in (App.js)");
+
+    
+    if(Backend.checkLogin())
+    {
+      console.log("User logged in (App.js)");// currentUserID = Backend.currentUserID();
+    }
     else console.log("User is not logged in (App.js)");
   
     return (

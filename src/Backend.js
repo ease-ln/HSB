@@ -11,7 +11,8 @@ import { StyleSheet,
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 var err = 0;
-export class Backend {
+export class Backend{
+    //[currentUser,setCurrentUser] = useState("wiouw");
     //signs up the user
     static signUpUser = (username, email, password) => {
       if (username.length < 5) {
@@ -278,15 +279,7 @@ export class Backend {
       console.log("user logged out");
       //todo: add an alert here for confirmation
     }
-    static currentUserID()
-    {
-      uid = firebase.auth().currentUser.uid;
-      var data;
-      data =  firebase.database().ref("usernames/"+uid).once('value').then(function(snapshot){
-        return snapshot.child("uid").val();
-      });
-      return data;
-    }
+    
 
 
     //adds a new habit to the user
@@ -388,8 +381,10 @@ export class Backend {
       refUser.once('value').then(function(snapshot){
         for(var id in snapshot.val())
         {
-          var element = [snapshot.child(id).val()];
-          arr.push.apply(arr,element);
+          console.log(id);
+          //var element = [snapshot.child(id).val()];
+          
+          //arr.push.apply(arr,element);
         }  //there might be a problem with async
       });
       return arr;
