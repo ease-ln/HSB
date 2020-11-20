@@ -4,12 +4,50 @@ import { StyleSheet, View, Text, TextInput, TouchableOpacity, Button,BackHandler
 import { globalStyles } from '../styles/global';
 import { Actions } from 'react-native-router-flux';
 import { useEffect } from "react";
+import * as firebase from 'firebase';
 
 export default function Details({ route, navigation }) {
-    let { name, description, rating, done, key } = route.params.pass_item; // here we extract the other atributes os the review
+    let { name, description, rating, done, key} = route.params.pass_item; // here we extract the other atributes os the review
     let editingHabit = route.params.pass_item;
-
-        
+    var username = '';
+    var currentUser = route.params.pass_username;
+    if(firebase.auth().currentUser!=null)
+    {
+        var uid =  firebase.auth().currentUser.uid;
+        firebase.database().ref("usernames/"+uid).once('value').then(function(snapshot){
+        currentUser = snapshot.child("uid").val();
+        console.log('Retrieved username from firebase (details.js)');
+      });
+    }
+    const addUser = ()=>
+    {
+        firebase.database().ref('users/'+username).once('value').then(function(snapshot){
+            if(snapshot.val()==null)
+            {
+                Alert.alert(
+                    'Invalid username!',
+                    `There is no user with the username ${username}`,
+                    [
+                      {
+                        text: 'OK',
+                      }
+                    ],
+                    { cancelable: false }
+                  )  
+                return;
+            }
+            console.log('Valid user, adding habit');
+            console.log('     current user: '+currentUser);
+            firebase.database().ref('users/'+username+'/habits/'+key).set({
+                name: name,
+                description: description,
+                id: key,
+                new: true,
+                addedBy: currentUser,
+                lastDate: 'never'
+            })
+        })
+    }
 
     useEffect(() => {
         const backAction = () => {
@@ -71,7 +109,17 @@ export default function Details({ route, navigation }) {
                 title= "Statistics"
                 color = '#00A9A5' 
             />
-
+            <Text></Text>
+            <TextInput
+                onChangeText={(body_text) => username = body_text}
+                defaultValue = ''
+                placeholder = 'Enter a username, to add him to the habit'
+            />
+            <Button
+                onPress={addUser}
+                title= "Add User"
+                color = '#00A9A5' 
+            />
         </View>
     )
 }

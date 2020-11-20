@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, FlatList, TouchableOpacity, Modal } from 'react-native';
+import { StyleSheet, View, Text, FlatList, TouchableOpacity, Modal, Alert } from 'react-native';
 import { globalStyles } from '../styles/global';
 import { MaterialIcons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -14,11 +14,7 @@ import * as firebase from 'firebase';
 // and we only need a "navigation" part (atribute) of this object so we type {navigation}
 export default function Home({ navigation }) {
     const [modalOpen, setModalOpen] = useState(false);
-    const [habits, setHabits] = useState([
-        { name: 'Drink water', rating: 5, description: 'drink water int the morinig right after I woke up', key: '4', done: false},
-        { name: 'Stretching', rating: 4, description: 'Do streching for 10 minutes in the morning', key: '2', done: false},
-        { name: 'Work on FSE project', rating: 3, description: 'work on the front for 45 minutes', key: '3', done: false},
-    ]);
+    const [habits, setHabits] = useState([]);
     const [currentUser,setCurrentUser]= useState("INVALID_USERNAME!");
     const [welcomeText,setWelcomeText] = useState("Loading information...");
 
@@ -35,7 +31,7 @@ export default function Home({ navigation }) {
                 ...i,
                 created: undefined
             })));
-            navigation.navigate('Details', {pass_item: item, pass_editHabit: editHabit, pass_deleteHabit: deleteHabit});
+            navigation.navigate('Details', {pass_item: item, pass_editHabit: editHabit, pass_deleteHabit: deleteHabit,pass_username:currentUser});
             
         }
     }, [habits]);
@@ -98,6 +94,20 @@ export default function Home({ navigation }) {
         for(var i in habitsArr)
             {
                 console.log(habitsArr[i]);
+                if(habitsArr[i].new && habitsArr[i].addedBy!=username)
+                {
+                    Alert.alert(
+                        'Someone added you to a habit!',
+                        `${habitsArr[i].addedBy} added you to the habit ${habitsArr[i].name}`,
+                        [
+                          {
+                            text: 'Nice!',
+                          }
+                        ],
+                        { cancelable: false }
+                      )  
+                      firebase.database().ref("users/"+username+'/habits/'+habitsArr[i].id+'/new').set(false);
+                }
                 setHabits((currentHabits) => {
                     const tmp = currentHabits.filter(habit => habit.key != habitsArr[i].id)
                     return tmp
@@ -134,9 +144,11 @@ export default function Home({ navigation }) {
             firebase.database().ref("users/"+username+'/habits/'+item.key+'/lastDate').once('value').then(function(snapshot){
                 var old = snapshot.val();
                 firebase.database().ref("users/"+username+'/habits/'+item.key+'/secondLastDate').set(old);
+                firebase.database().ref("users/"+username+'/habits/'+item.key+'/lastDateKey').set(dateKey);
+                firebase.database().ref("users/"+username+'/habits/'+item.key+'/lastDate').set(Backend.getDate());
             });
             firebase.database().ref("users/"+username+'/habits/'+item.key+'/lastDate').set(Backend.getDate());
-            firebase.database().ref("users/"+username+'/habits/'+item.key+'/lastDateKey').set(dateKey);
+            
         }
         else {
             console.log("                    habit unticked");
@@ -148,7 +160,7 @@ export default function Home({ navigation }) {
             });
             firebase.database().ref("users/"+username+'/habits/'+item.key+'/secondLastDate').once('value').then(function(snapshot){
                 var old = snapshot.val();
-                firebase.database().ref("users/"+username+'/habits/'+item.key+'/LastDate').set(old);
+                firebase.database().ref("users/"+username+'/habits/'+item.key+'/lastDate').set(old);
             });
             firebase.database().ref("users/"+username+'/habits/'+item.key+'/lastDateKey').once('value').then(function(snapshot){
                 var dateKey = snapshot.val();
@@ -174,12 +186,16 @@ export default function Home({ navigation }) {
         console.log(uid);
         username = snapshot.child("uid").val();
         setWelcomeText('Welcome home, '+ username + '!');
+        setCurrentUser(username);
         console.log("user name retrieved");
         
         firebase.database().ref("users/"+username+'/habits').once('value').then(function(snap){
            if(!initialsDone) {
             setInitials(true); 
             fetchHabits(snap);
+            firebase.database().ref("users/"+username+'/habits').on('value', (snapshot) =>{
+                fetchHabits(snapshot);
+              });
            }
         });
        // fetchHabits(snapshot.child("habits"));
@@ -189,7 +205,7 @@ export default function Home({ navigation }) {
     //fetchHabits();
     return (
         <View style={globalStyles.container}>
-            <TouchableOpacity ><Text id>{welcomeText}</Text></TouchableOpacity>
+            <TouchableOpacity ><Text>{welcomeText}</Text></TouchableOpacity>
             {/* <Modal animationType="slide" visible={modalOpen}>
                 <View style={styles.modalContent}>
                     <MaterialIcons
