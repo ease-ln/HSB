@@ -162,7 +162,7 @@ export default function Home({ navigation }) {
             
         }
         else {
-            console.log("                    habit unticked");
+            console.log("habit unticked");
             setDoneColor(() => { return '#eee'});
             firebase.database().ref("users/"+username+'/habits/'+item.key+'/numberOfDays').once('value').then(function(snapshot){
                 var oldCount = snapshot.val();
@@ -204,9 +204,9 @@ export default function Home({ navigation }) {
            if(!initialsDone) {
             setInitials(true); 
             fetchHabits(snap);
-            firebase.database().ref("users/"+username+'/habits').on('value', (snapshot) =>{
+           /* firebase.database().ref("users/"+username+'/habits').on('value', (snapshot) =>{
                 fetchHabits(snapshot);
-              });
+              });*/
            }
         });
        // fetchHabits(snapshot.child("habits"));
