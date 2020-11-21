@@ -18,31 +18,9 @@ export default class Routes extends Component<{}> {
   handleEmail = (text) => {
       this.setState({ status: text })   
   }
-   /*_storeData = async () => {
-   try {
-    const value = await AsyncStorage.getItem('Loginuser')
-    if(value == 1) {
-    	this.handleEmail(false);
-    }
-       }
-   catch{
-    alert('error')
-   }}*/
-              // <Scene key="home" component={home} title="home"/>
 
   render() {
-    /*if(Backend.checkLogin())
-    {
-      return(
-        <Router>
-            <Stack key="root" hideNavBar={true}>
-              <Scene key="myhabits" component={Myhabits} title="Myhabits" initial={true}/>
-              <Scene key="statistics" component={Statistics} title="Statistics"/>
-            </Stack>
-         </Router>
-        )
-    }
-		else*/ return(
+    return(
 			<Router>
 			    <Stack key="root" hideNavBar={true}>
 			      <Scene key="login" component={Login} title="Login" initial={true}
@@ -60,5 +38,3 @@ export default class Routes extends Component<{}> {
 			)
 	}
 }
-
-//<Scene key="statistics" component={Statistics} title="Statistics"/>

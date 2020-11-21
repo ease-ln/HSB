@@ -45,9 +45,16 @@ export default function Home({ navigation }) {
             numberOfDays: 0,
             name: '',
             description: '',
-            lastDate: 'never'
+            lastDate: 'never',
+            numberOfDays: 0,
           }).key;
           firebase.database().ref("users/"+username+'/habits/'+newKey+'/id').set(newKey);
+          firebase.database().ref('habits/'+newKey).set({
+              id: newKey,
+              name: '',
+              description: '',
+          });
+          firebase.database().ref('habits/'+newKey+'/users/'+username).set(true);
         setHabits((currentHabits) => {
             return [{ name: '', rating: 0, description: '', key: newKey, done: false, created: true}, ...currentHabits] // create a List w/ habit in it and all the decomposed elements from currentHabits
         })
@@ -61,7 +68,9 @@ export default function Home({ navigation }) {
             return;
         }
         firebase.database().ref("users/"+username+'/habits/'+item.key+'/name').set(item.name);
+        firebase.database().ref('habits/'+item.key+'/name').set(item.name);
         firebase.database().ref("users/"+username+'/habits/'+item.key+'/description').set(item.description);
+        firebase.database().ref('habits/'+item.key+'/description').set(item.description);
         setHabits((currentHabits) => {
             const tmp = currentHabits.filter(habit => habit.key != item.key)
             //console.log('all except one are:')
@@ -75,6 +84,7 @@ export default function Home({ navigation }) {
     }
     const deleteHabit = (key) => {
         firebase.database().ref("users/"+username+'/habits/'+key).remove();
+        firebase.database().ref('habits/'+key+'/users/'+username).remove();
         setHabits((currentHabits) => {
             const tmp = currentHabits.filter(habit => habit.key != key)
             return tmp

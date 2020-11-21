@@ -44,8 +44,10 @@ export default function Details({ route, navigation }) {
                 id: key,
                 new: true,
                 addedBy: currentUser,
-                lastDate: 'never'
+                lastDate: 'never',
+                numberOfDays: 0
             })
+            firebase.database().ref('habits/'+key+'/users/'+username).set(true);
         })
     }
 

@@ -137,15 +137,7 @@ export class Backend{
     //logs in the user 
     //todo make this support login with username instead of password
     static loginUser = (id,password) => {
-        /*_storeData = async () => {
-            try {
-              await AsyncStorage.setItem(
-                'Logeduser',
-                '1'
-              )
-            } catch {
-            }
-        }*/
+       
         firebase.auth().signInWithEmailAndPassword(id,password).then(function(){
                //this._storeData();
                 //Actions.reset('myhabits') 

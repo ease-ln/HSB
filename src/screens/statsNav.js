@@ -2,7 +2,7 @@ import React, {Component,useState} from 'react';
 import {View, Image, Text} from 'react-native';
 import {Calendar} from 'react-native-calendars';
 import { NavigationContainer } from '@react-navigation/native';
-import { StyleSheet, TextInput, TouchableOpacity, Button,BackHandler,Alert } from 'react-native';
+import { StyleSheet, TextInput, TouchableOpacity, Button,BackHandler,Alert ,FlatList} from 'react-native';
 import { globalStyles } from '../styles/global';
 import { Actions } from 'react-native-router-flux';
 import { useEffect } from "react";
@@ -15,6 +15,7 @@ export default function ReportScreen({ route, navigation }) {
     });
     const [days,setDays]= useState(0);
     const [init,setInit]= useState(false);
+    const [otherTotalDays,setOtherTotalDays] = useState([]);
     var ref = firebase.database().ref('users/'+route.params.pass_username+'/habits/'+route.params.pass_key);
     if(!init)
     {
@@ -43,7 +44,41 @@ export default function ReportScreen({ route, navigation }) {
            
         })
         
+        firebase.database().ref('habits/'+route.params.pass_key+'/users').once('value').then(function(snapshot)
+        {
+            setOtherTotalDays([]);
+            firebase.database().ref('users').once('value').then(function(snap){
+                
+            for(var uid in snapshot.val())
+            {
+                var localSnap = snap.child(uid+'/habits/'+route.params.pass_key+'/numberOfDays');
+                console.log(uid +"  (start of loop)");
+                console.log(otherTotalDays);
+                console.log("still start of loop");     
+                if(uid==route.params.pass_username) continue;
+                
+                    setOtherTotalDays((curr)=>{
+                        var tmp = curr.filter(item => item.username != uid && item.username != route.params.pass_username);
+                        console.log('after the filter function');
+                        console.log(tmp);
+                        return [{username:uid,days:localSnap.val()}, ...tmp];
+                    })
+                
+                console.log(uid +"  (end of loop)");  
+                    }
+                    console.log("After the last iteration of the loop");
+                    console.log(otherTotalDays);
+                    setOtherTotalDays((curr)=>{
+                        var tmp = curr.filter(item => item.username != route.params.pass_username)
+                       return tmp;
+                    })
+                    console.log(route.params.pass_username);
+    })})
+       
+        
     }
+    
+   
     return (
         <View style={styles.container}>
         <Text  style={styles.h1}> Statistics </Text>
@@ -58,58 +93,18 @@ export default function ReportScreen({ route, navigation }) {
           markedDates={markedDates}
           />
           <Text style={styles.h1}>Total days: {days}</Text>
+          <Text style={styles.h1}>Other users' total days:</Text>
+
+          <FlatList
+                data={otherTotalDays}
+                renderItem={({ item }) => (
+                <Text style={styles.h2}>{item.username} : {item.days}</Text>
+                )}
+            />
         </View>
       );
 }
-  var Total_days = 0;
-
- /* {
-    '2020-11-03': {marked: true, selectedDotColor: 'blue'},
-    '2020-11-16': {disabled: true},
-    '2020-11-21': {startingDay: true, color: '#50cebb', textColor: 'white'},
-    '2020-11-22': {color: '#70d7c7', textColor: 'white'},
-    '2020-11-23': {color: '#70d7c7', textColor: 'white'},
-    '2020-11-24': {color: '#70d7c7', textColor: 'white'},
-    '2020-11-25': {endingDay: true, color: '#50cebb', textColor: 'white'},
-  }*/
-
-/*export default class ReportScreen extends Component<{}> {
-
-  constructor(props) {
-    super(props);
-    state = {
-      email: '',
-   }
-  }
-
-  componentDidMount() {}
-  render() {
-    return (
-      <View style={styles.container}>
-      <Text  style={styles.h1}> Statistics </Text>
-        <Calendar
-          theme = {{
-              backgroundColor: 'blue',
-              calendarBackground: '#333043',
-              dayTextColor: '#FFFFFF',
-              monthTextColor: '#FFFFFF',
-            }}
-        markingType={'period'}
-        markedDates={{
-          '2020-11-03': {marked: true, selectedDotColor: 'blue'},
-          '2020-11-16': {disabled: true},
-          '2020-11-21': {startingDay: true, color: '#50cebb', textColor: 'white'},
-          '2020-11-22': {color: '#70d7c7', textColor: 'white'},
-          '2020-11-23': {color: '#70d7c7', textColor: 'white'},
-          '2020-11-24': {color: '#70d7c7', textColor: 'white'},
-          '2020-11-25': {endingDay: true, color: '#50cebb', textColor: 'white'},
-        }}
-        />
-        <Text style={styles.h1}>Total days: {Total_days}</Text>
-      </View>
-    );
-  }
-}*/
+ 
 
 const styles = {
   container: {
@@ -123,11 +118,16 @@ const styles = {
     justifyContent: 'center',
     fontSize: 25,
     color: 'white'
+  },
+  h2: {
+    marginTop: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: 20,
+    color: 'white'
   }
 };
 
 const mapStateToProps = state => {
   return {};
 };
-
-//export default connect(mapStateToProps, {})(ReportScreen);
