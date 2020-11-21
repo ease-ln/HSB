@@ -9,6 +9,7 @@ import { color } from 'react-native-reanimated';
 
 import {Backend} from '../Backend';
 import * as firebase from 'firebase';
+import { Actions } from 'react-native-router-flux';
 
 // {navigation} as an arg means that when we call Home from navigator we pass some obj 
 // and we only need a "navigation" part (atribute) of this object so we type {navigation}
@@ -200,24 +201,13 @@ export default function Home({ navigation }) {
         });
        // fetchHabits(snapshot.child("habits"));
       });
-    } //});
+    } else Actions.login(); //not sure of this
     //console.log(username);
     //fetchHabits();
     return (
         <View style={globalStyles.container}>
             <TouchableOpacity ><Text>{welcomeText}</Text></TouchableOpacity>
-            {/* <Modal animationType="slide" visible={modalOpen}>
-                <View style={styles.modalContent}>
-                    <MaterialIcons
-                        name='close'
-                        size={40}
-                        style={{...styles.modalToggle, ...styles.modalClose}}
-                        onPress={() => setModalOpen(false)}
-                    />
-                        <Form addHabit={addHabit}/>
-                    <Text>Hello from the modal :)</Text>
-                </View>
-            </Modal> */}
+            {}
 
             <MaterialIcons
                 name='add'
@@ -229,7 +219,7 @@ export default function Home({ navigation }) {
             <FlatList
                 data={habits}
                 renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => navigation.navigate('Details', {pass_item: item, pass_editHabit: editHabit, pass_deleteHabit: deleteHabit})}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Details', {pass_item: item, pass_editHabit: editHabit, pass_deleteHabit: deleteHabit,pass_username:currentUser})}>
                         <Card>             
                             <MaterialCommunityIcons
                                 name={item.done === true ? 'checkbox-marked' : 'checkbox-blank-outline'}

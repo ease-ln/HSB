@@ -60,3 +60,5 @@ export default class Routes extends Component<{}> {
 			)
 	}
 }
+
+//<Scene key="statistics" component={Statistics} title="Statistics"/>

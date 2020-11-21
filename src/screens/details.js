@@ -103,7 +103,7 @@ export default function Details({ route, navigation }) {
             />
             <Button
                 onPress={() => {
-                     Actions.statistics()
+                     navigation.navigate('Statistics',{pass_key:key,pass_username:currentUser});
                     }
                 }
                 title= "Statistics"

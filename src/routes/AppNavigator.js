@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from '@react-navigation/stack';
 import home from '../screens/home';
 import details from '../screens/details';
+import reportScreen from '../screens/statsNav';
 
 //const { Navigator, Screen } = createStackNavigator();
 const Stack = createStackNavigator();
@@ -17,9 +18,11 @@ function HomeNavigator() {
     <Stack.Navigator>
       <Stack.Screen name="Home" component={home} />
       <Stack.Screen name="Details" component={details} />
+      <Stack.Screen name="Statistics" component={reportScreen}/>
     </Stack.Navigator>
   );
 }
+//<Stack.Screen name="reportScreen" component={reportScreen}/>
 // no deafaultNavigationOptions? cause new version :()
 export const AppNavigator = () => (
   <NavigationContainer>

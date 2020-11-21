@@ -2,6 +2,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createAppContainer } from "@react-navigation/native";
 import Home from '../screens/home';
 import Details from '../screens/details';
+import reportScreen from '../screens/statsNav';
 
 
 const screens = {
@@ -11,6 +12,9 @@ const screens = {
     },
     Details: {
         screen: Details
+    },
+    reportScreen: {
+        screen: reportScreen
     },
 };
 
