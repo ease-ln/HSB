@@ -79,21 +79,45 @@ export default function Details({ route, navigation }) {
             />
             
             <TextInput
+                style={[ {fontSize: 20} ]}
                 onChangeText={(body_text) => description = body_text}
                 defaultValue = {description}
                 placeholder = 'Description'
             />
             {/* <Text>{done}</Text> */}
+            
+            
+            
+            <TextInput
+                onChangeText={(body_text) => username = body_text}
+                defaultValue = ''
+                placeholder = 'Enter a username here, to add him to the habit'
+
+            />
+            <Button
+                onPress={addUser}
+                title= "Add User"
+                color = '#4d908e' 
+            />
+            <Text style={{
+                color: 'gray'
+            }}>
+                
+            </Text>
             <Button
                 onPress={() => {
-                    route.params.pass_editHabit({name: name, rating: rating, description: description, key: key, done: done});
-                    navigation.goBack();
+                    navigation.navigate('Statistics',{pass_key:key,pass_username:currentUser});
                     }
                 }
-                title = "Apply Changes"
-                color = '#00A9A5' 
+                title= "Statistics"
+                color = '#577590' 
             />
 
+            <Text style={{
+                color: 'gray'
+            }}>
+                
+            </Text>
             <Button
                 onPress={() => {
                     route.params.pass_deleteHabit(key);
@@ -101,27 +125,26 @@ export default function Details({ route, navigation }) {
                     }
                 }
                 title= "Delete the Habit"
-                color = '#4E8098' 
+                color = '#ef476f' 
             />
-            <Button
-                onPress={() => {
-                     navigation.navigate('Statistics',{pass_key:key,pass_username:currentUser});
+                
+            <View style={{
+                flex: 1,
+                flexDirection: 'column',
+                justifyContent: 'flex-end',
+            }}>
+                <Button
+                    onPress={() => {
+                        route.params.pass_editHabit({name: name, rating: rating, description: description, key: key, done: done});
+                        navigation.goBack();
+                        }
                     }
-                }
-                title= "Statistics"
-                color = '#00A9A5' 
-            />
-            <Text></Text>
-            <TextInput
-                onChangeText={(body_text) => username = body_text}
-                defaultValue = ''
-                placeholder = 'Enter a username, to add him to the habit'
-            />
-            <Button
-                onPress={addUser}
-                title= "Add User"
-                color = '#00A9A5' 
-            />
+                    title = "Apply Changes"
+                    color = '#4d908e' 
+                />
+
+                
+            </View>
         </View>
     )
 }

@@ -162,7 +162,7 @@ export default function Home({ navigation }) {
             
         }
         else {
-            console.log("                    habit unticked");
+            console.log("habit unticked");
             setDoneColor(() => { return '#eee'});
             firebase.database().ref("users/"+username+'/habits/'+item.key+'/numberOfDays').once('value').then(function(snapshot){
                 var oldCount = snapshot.val();
