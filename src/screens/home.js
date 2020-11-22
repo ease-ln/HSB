@@ -204,9 +204,9 @@ export default function Home({ navigation }) {
            if(!initialsDone) {
             setInitials(true); 
             fetchHabits(snap);
-            firebase.database().ref("users/"+username+'/habits').on('value', (snapshot) =>{
+           /* firebase.database().ref("users/"+username+'/habits').on('value', (snapshot) =>{
                 fetchHabits(snapshot);
-              });
+              });*/
            }
         });
        // fetchHabits(snapshot.child("habits"));
